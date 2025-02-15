@@ -6,23 +6,27 @@ default:
 
 # install extra dependencies of your KV code
 deps:
-    # FIXME: your dependency installation commands here
+    git submodule add https://github.com/HarukiMoriarty/Distributed-KV-Store.git
 
 # build your executables in release mode
 build:
-    cd src && cargo build --release
+    cargo build --release
 
 # clean the build of your executables
 clean:
-    # FIXME: your clean commands here
+    cargo clean --release
 
 # run your KV store server
 server listen="0.0.0.0:3777":
-    cd src && cargo run --release --bin server -- --connect-addr {{listen}}
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --connect-addr {{listen}}
 
 # run you KV store client in stdin/out interface mode
 client server="127.0.0.1:3777":
-    cd src && cargo run --release --bin benchmark -- --connect-addr {{server}}
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin client -- --connect-addr {{server}}
+
+# run you KV store client in stdin/out interface mode (with madkv format)
+benchmark server="127.0.0.1:3777":
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{server}}
 
 # run your KV store testcase 1 client
 test1 server="127.0.0.1:3777":
