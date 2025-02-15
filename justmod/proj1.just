@@ -4,9 +4,17 @@ set working-directory := '..'
 default:
     @just --list p1 --unsorted
 
+# install extra dependencies of your KV code
+deps:
+    # FIXME: your dependency installation commands here
+
 # build your executables in release mode
 build:
     cd src && cargo build --release
+
+# clean the build of your executables
+clean:
+    # FIXME: your clean commands here
 
 # run your KV store server
 server listen="0.0.0.0:3777":
@@ -45,38 +53,58 @@ test5 server="127.0.0.1:3777":
 kill:
     # FIXME: your kill commands here
     #        make sure that it kills all server, clients, and any extra helper
-    #        processes of your system
+    #        processes of your system; redirecting both out & err to /dev/null
+    #        is recommended
+    #   TIP: commands such as 'pkill' may return non-zero exit code on success,
+    #        which would by default abort the 'just' recipe early; prepend the
+    #        command with a '-' sign to ignore its exit code
     pkill -f "server|benchmark"
 
 # NOTE: feel free to add more recipes as you see fit...
 #       also feel free to add extra parameters to the recipes as you see fit,
 #       but don't change the existing parameters
 
+# launch a long-running KV store service
+service listen="0.0.0.0:3777":
+    just p1::build
+    just utils::build
+    cargo run -p runner -r --bin service -- \
+        --just-args p1::server "{{listen}}"
+
 # ensure a subdir under 'tmp/' exists
 tmpdir subdir:
     mkdir -p "/tmp/madkv-p1/{{subdir}}"
 
-# run a student-provided testcase (wip)
+# run a student-provided testcase
 testcase num server="127.0.0.1:3777": (tmpdir "tests")
     just p1::build
-    # TODO: to be announced
+    just "p1::test{{num}}" "{{server}}" \
+        | tee "/tmp/madkv-p1/tests/test{{num}}.log"
     just p1::kill
 
-# run a fuzz testing scenario (wip)
-fuzz scene server="127.0.0.1:3777": (tmpdir "fuzz")
+# run a fuzz testing scenario
+fuzz nclis conflict="no" server="127.0.0.1:3777": (tmpdir "fuzz")
     just p1::build
     just utils::build
-    # TODO: to be announced
+    cargo run -p runner -r --bin fuzzer -- \
+        --num-clis "{{nclis}}" \
+        {{ if conflict == "no" { "" } else { "--conflict" } }} \
+        --just-args p1::client "{{server}}" \
+        | tee "/tmp/madkv-p1/fuzz/fuzz-{{nclis}}-{{conflict}}.log"
     just p1::kill
 
-# run a YCSB benchmark workload (wip)
-bench wload nclis server="127.0.0.1:3777": (tmpdir "bench")
+# run a YCSB benchmark workload
+bench nclis wload server="127.0.0.1:3777": (tmpdir "bench")
     just p1::build
     just utils::build
     just utils::ycsb
-    # TODO: to be announced
+    cargo run -p runner -r --bin bencher -- \
+        --num-clis "{{nclis}}" \
+        --workload "{{wload}}" \
+        --just-args p1::client "{{server}}" \
+        | tee "/tmp/madkv-p1/bench/bench-{{nclis}}-{{wload}}.log"
     just p1::kill
 
 # generate .md report template from existing results (wip)
 report:
-    # TODO: to be announced
+    python3 sumgen/proj1.py
