@@ -6,15 +6,15 @@ default:
 
 # build your executables in release mode
 build:
-    # FIXME: your build commands here
+    cd src && cargo build --release
 
 # run your KV store server
 server listen="0.0.0.0:3777":
-    # FIXME: your server run command here, listening on addr for new clients
+    cd src && cargo run --release --bin server -- --connect-addr {{listen}}
 
 # run you KV store client in stdin/out interface mode
 client server="127.0.0.1:3777":
-    # FIXME: your client run command here, connecting to server at addr
+    cd src && cargo run --release --bin benchmark -- --connect-addr {{server}}
 
 # run your KV store testcase 1 client
 test1 server="127.0.0.1:3777":
@@ -46,6 +46,7 @@ kill:
     # FIXME: your kill commands here
     #        make sure that it kills all server, clients, and any extra helper
     #        processes of your system
+    pkill -f "server|benchmark"
 
 # NOTE: feel free to add more recipes as you see fit...
 #       also feel free to add extra parameters to the recipes as you see fit,
