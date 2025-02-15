@@ -11,10 +11,15 @@ deps:
 # build your executables in release mode
 build:
     cargo build --release
+    git submodule update --recursive --remote
 
 # clean the build of your executables
 clean:
     cargo clean --release
+
+# generate random trace for testing
+trace num_op="50" file="trace.txt":
+    python3 tracegen.py {{num_op}} {{file}}
 
 # run your KV store server
 server listen="0.0.0.0:3777":

@@ -3,9 +3,7 @@ import random
 import string
 import sys
 
-NUM_COMMANDS = 50
 OUTPUT_DIR = "traces/"
-TRACE_FILE = "trace.txt"
 # Define allowed characters for keys and values: ASCII letters and digits.
 ALPHANUM = string.ascii_letters + string.digits
 
@@ -76,6 +74,7 @@ if __name__ == '__main__':
         sys.exit(1)
     
     trace_file = sys.argv[2]
+    trace_file = OUTPUT_DIR + trace_file if not trace_file.startswith(OUTPUT_DIR) else trace_file
     
     trace = generate_trace(num_commands)
     
