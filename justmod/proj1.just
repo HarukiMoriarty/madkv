@@ -18,7 +18,7 @@ clean:
     cargo clean --release
 
 # generate random trace for testing
-trace num_op="50" file="trace.txt":
+trace num_op="1000" file="trace-1k-1":
     python3 tracegen.py {{num_op}} {{file}}
 
 # run your KV store server
@@ -35,28 +35,24 @@ benchmark server="127.0.0.1:3777":
 
 # run your KV store testcase 1 client
 test1 server="127.0.0.1:3777":
-    # FIXME: your testcase 1 client run command here
-    #        for testcases, feel free to reuse 'just p1::client' if you
-    #        designed your clients this way, or invoke different executables
+    cat traces/trace-1k-1 | just p1::benchmark {{server}} &
 
 # run your KV store testcase 2 client
 test2 server="127.0.0.1:3777":
-    # FIXME: your testcase 2 client run command here
+    ./scripts/run-multi-client.sh {{server}} 2
 
 # run your KV store testcase 3 client
 test3 server="127.0.0.1:3777":
-    # FIXME: your testcase 3 client run command here
+    ./scripts/run-multi-client.sh {{server}} 3
+
 
 # run your KV store testcase 4 client(s)
 test4 server="127.0.0.1:3777":
-    # FIXME: your testcase 4 client(s) run commands here
-    #        for multi-client testcases, this recipe should run multiple
-    #        concurrent client processes; you may write an additional runner
-    #        utility or a scripting layer to manage multiple processes
+    ./scripts/run-multi-client.sh {{server}} 4
 
 # run your KV store testcase 5 client(s)
 test5 server="127.0.0.1:3777":
-    # FIXME: your testcase 5 client(s) run commands here
+    ./scripts/run-multi-client.sh {{server}} 5
 
 # kill all processes of your KV store system
 kill:
