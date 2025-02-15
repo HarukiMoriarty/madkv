@@ -1,3 +1,3 @@
-[submodule "src"]
-	path = src
+[submodule "Distributed-KV-Store"]
+	path = Distributed-KV-Store
 	url = https://github.com/HarukiMoriarty/Distributed-KV-Store.git
