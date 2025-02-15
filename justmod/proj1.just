@@ -94,7 +94,7 @@ fuzz nclis conflict="no" server="127.0.0.1:3777": (tmpdir "fuzz")
     cargo run -p runner -r --bin fuzzer -- \
         --num-clis "{{nclis}}" \
         {{ if conflict == "no" { "" } else { "--conflict" } }} \
-        --just-args p1::client "{{server}}" \
+        --just-args p1::benchmark "{{server}}" \
         | tee "/tmp/madkv-p1/fuzz/fuzz-{{nclis}}-{{conflict}}.log"
     just p1::kill
 
@@ -106,7 +106,7 @@ bench nclis wload server="127.0.0.1:3777": (tmpdir "bench")
     cargo run -p runner -r --bin bencher -- \
         --num-clis "{{nclis}}" \
         --workload "{{wload}}" \
-        --just-args p1::client "{{server}}" \
+        --just-args p1::benchmark "{{server}}" \
         | tee "/tmp/madkv-p1/bench/bench-{{nclis}}-{{wload}}.log"
     just p1::kill
 
