@@ -63,7 +63,9 @@ kill:
     #   TIP: commands such as 'pkill' may return non-zero exit code on success,
     #        which would by default abort the 'just' recipe early; prepend the
     #        command with a '-' sign to ignore its exit code
-    pkill -f "server|benchmark"
+    -pkill -f "Distributed-KV-Store/target/release/server"  > /dev/null 2>&1
+    -pkill -f "Distributed-KV-Store/target/release/client"  > /dev/null 2>&1
+    -pkill -f "Distributed-KV-Store/target/release/benchmark"  > /dev/null 2>&1
 
 # NOTE: feel free to add more recipes as you see fit...
 #       also feel free to add extra parameters to the recipes as you see fit,
