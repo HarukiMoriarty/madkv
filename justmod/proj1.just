@@ -18,8 +18,8 @@ clean:
     cargo clean --release
 
 # generate random trace for testing
-trace num_op="1000" file="trace-1k-1":
-    python3 tracegen.py {{num_op}} {{file}}
+trace:
+    python3 ./scripts/gen_trace.py
 
 # run your KV store server
 server listen="0.0.0.0:3777":
@@ -35,7 +35,7 @@ benchmark server="127.0.0.1:3777":
 
 # run your KV store testcase 1 client
 test1 server="127.0.0.1:3777":
-    cat traces/trace-1k-1 | just p1::benchmark {{server}} &
+    ./scripts/run-multi-client.sh {{server}} 1
 
 # run your KV store testcase 2 client
 test2 server="127.0.0.1:3777":
@@ -44,7 +44,6 @@ test2 server="127.0.0.1:3777":
 # run your KV store testcase 3 client
 test3 server="127.0.0.1:3777":
     ./scripts/run-multi-client.sh {{server}} 3
-
 
 # run your KV store testcase 4 client(s)
 test4 server="127.0.0.1:3777":
