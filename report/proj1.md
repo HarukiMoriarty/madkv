@@ -76,15 +76,15 @@ Client send `Command` to Server, which contains a list of operations (GET/PUT/SW
 
 Server responds `CommandResult` to Client, which contains results of each operation, execution status (COMMITTED or ABORTED) and any possible error information.
 
-## Self-provided Testcases
+## 2 Self-provided Testcases
 
 <u>Found the following testcase results:</u> 1, 2, 3, 4, 5
 
-### Explanations
+### 2.1 Explanations
 
 *FIXME: add your explanations of each testcase*
 
-## Fuzz Testing
+## 3 Fuzz Testing
 
 <u>Parsed the following fuzz testing results:</u>
 
@@ -94,11 +94,11 @@ num_clis | conflict | outcome
 3 | no | PASSED
 3 | yes | PASSED
 
-### Comments
+### 3.1 Comments
 
 *FIXME: add your comments on fuzz testing*
 
-## YCSB Benchmarking
+## 4 YCSB Benchmarking
 
 <u>Single-client throughput/latency across workloads:</u>
 
@@ -112,11 +112,11 @@ num_clis | conflict | outcome
 
 ![lats-trend](plots/ycsb-lats-trend.png)
 
-### Comments
+### 4.1 Comments
 
 *FIXME: add your discussions of benchmarking results*
 
-## Additional Discussion
+## 5 Additional Discussion
 
 *OPTIONAL: add extra discussions if applicable*
 
