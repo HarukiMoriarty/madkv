@@ -14,7 +14,7 @@ source $HOME/.bashrc
 
 # python 3.12
 sudo apt update
-sudo apt install libssl-dev zlib1g-dev
+sudo apt install libssl-dev zlib1g-dev python3-pip
 pyenv install 3.12
 pyenv global 3.12
 
