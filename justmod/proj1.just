@@ -11,7 +11,7 @@ deps:
 # build your executables in release mode
 build:
     cargo build --release
-    git submodule update --recursive --remote
+    git submodule update --recursive --remote --init
 
 # clean the build of your executables
 clean:
