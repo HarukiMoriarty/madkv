@@ -1,0 +1,20 @@
+[33m[1mYCSB benchmark configuration:[39m[22m Args {
+    num_clis: 70,
+    num_ops: 10000,
+    workload: 'c',
+    just_args: [
+        "p1::benchmark",
+        "c220g2-011013.wisc.cloudlab.us:23000",
+    ],
+}
+[33m[1mBenchmarking [Load] phase...[39m[22m
+  Launched 70 YCSB drivers, now waiting...
+[33m[1mBenchmarking [Run] phase...[39m[22m
+  Launched 70 YCSB drivers, now waiting...
+[33m[1mBenchmarking results:[39m[22m  [36mYCSB-c[39m  [35m70 clients[39m
+  [36m[Load][39m    1824 ms
+    Throughput:   56756.38 ops/sec
+    Latency:    INSERT  ops  70000  avg    845.25  min     10  max 165375  p99  19423  us
+  [36m[Run] [39m    7878 ms
+    Throughput:   97743.66 ops/sec
+    Latency:    READ    ops 700000  avg    723.58  min      2  max 579071  p99   1209  us

@@ -1,0 +1,61 @@
+DELETE XlA5Zp not_found
+SWAP 6vjcRW null
+SWAP wBudIR null
+SCAN JSAdLs sBeSjU BEGIN
+SCAN END
+DELETE sBeSjU not_found
+GET nz14hA null
+PUT WMJbUb not_found
+SWAP nJmHQu null
+STOP
+SWAP XlA5Zp null
+SWAP 6vjcRW HXTXmy
+SWAP wBudIR c70y1R
+DELETE JSAdLs not_found
+SWAP sBeSjU null
+PUT nz14hA not_found
+SCAN WMJbUb nJmHQu BEGIN
+  WMJbUb XTk9dN
+  XlA5Zp iGO1v8
+  nJmHQu vAUUl5
+SCAN END
+SWAP nJmHQu vAUUl5
+STOP
+PUT XlA5Zp found
+PUT 6vjcRW found
+SCAN JSAdLs wBudIR BEGIN
+  WMJbUb XTk9dN
+  XlA5Zp tqHXz3
+  nJmHQu P6FiHE
+  nz14hA SyP7ID
+  sBeSjU wzAzPh
+  wBudIR fRMnJj
+SCAN END
+DELETE JSAdLs not_found
+PUT sBeSjU found
+DELETE nz14hA found
+SCAN WMJbUb nJmHQu BEGIN
+  WMJbUb XTk9dN
+  XlA5Zp tqHXz3
+  nJmHQu P6FiHE
+SCAN END
+SCAN XlA5Zp nJmHQu BEGIN
+  XlA5Zp tqHXz3
+  nJmHQu P6FiHE
+SCAN END
+STOP
+GET XlA5Zp tqHXz3
+DELETE 6vjcRW found
+SCAN JSAdLs wBudIR BEGIN
+  WMJbUb XTk9dN
+  XlA5Zp tqHXz3
+  nJmHQu P6FiHE
+  sBeSjU Qb9gU0
+  wBudIR fRMnJj
+SCAN END
+PUT JSAdLs not_found
+PUT sBeSjU found
+DELETE nz14hA not_found
+GET WMJbUb XTk9dN
+PUT nJmHQu found
+STOP

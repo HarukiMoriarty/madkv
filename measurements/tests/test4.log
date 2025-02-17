@@ -1,0 +1,28 @@
+GET BQWTFz null
+GET ckQv87 null
+DELETE 0E83ah not_found
+PUT dRXzNX not_found
+PUT itbRlH not_found
+GET PbLtpO null
+STOP
+GET BQWTFz null
+SCAN 0E83ah ckQv87 BEGIN
+SCAN END
+PUT 0E83ah not_found
+SCAN dRXzNX itbRlH BEGIN
+  dRXzNX h8LI0T
+  itbRlH CQv2Qs
+SCAN END
+SCAN PbLtpO itbRlH BEGIN
+  dRXzNX h8LI0T
+  itbRlH CQv2Qs
+SCAN END
+SWAP PbLtpO null
+STOP
+PUT BQWTFz not_found
+SWAP ckQv87 null
+PUT 0E83ah found
+GET dRXzNX h8LI0T
+SWAP itbRlH CQv2Qs
+SWAP PbLtpO kU0Yo6
+STOP
