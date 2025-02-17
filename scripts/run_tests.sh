@@ -24,6 +24,33 @@ pause_for_server() {
     echo "------------------------------------------"
 }
 
+# echo "-------------------"
+# echo "Self Provided Tests"
+# echo "-------------------"
+for testcase in 1 2 3 4 5; do
+    echo "Running test: p1::testcase $testcase $SERVER_ADDR"
+    just p1::testcase $testcase "$SERVER_ADDR"
+    pause_for_server
+done
+
+echo "-------------------"
+echo "Fuzz Tests"
+echo "-------------------"
+# Fuzz test: 1 client, disjoint keys.
+echo "Running test: p1::fuzz 1 no $SERVER_ADDR"
+just p1::fuzz 1 no "$SERVER_ADDR"
+pause_for_server
+
+# Fuzz test: 3 clients, disjoint keys.
+echo "Running test: p1::fuzz 3 no $SERVER_ADDR"
+just p1::fuzz 3 no "$SERVER_ADDR"
+pause_for_server
+
+# Fuzz test: 3 clients, conflicting keys.
+echo "Running test: p1::fuzz 3 yes $SERVER_ADDR"
+just p1::fuzz 3 yes "$SERVER_ADDR"
+pause_for_server
+
 echo "-------------------"
 echo "YCSB Tests: 1 client"
 echo "-------------------"
