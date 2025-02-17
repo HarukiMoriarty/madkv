@@ -2,31 +2,79 @@
 
 **Group members**: Qianliang Wu `qwu293@wisc.edu`, Zhenghong Yu `zyu379@wisc.edu`
 
-## Design Walkthrough
+## 1 Design Walkthrough
 
-### Client Layer
+### 1.1 Code Structure
 
-The client component is responsible for establishing and maintaining communication with the server's gateway via remote procedure calls (RPC). Upon startup, the client initializes a session that encapsulates both the transmission (tx) and reception (rx) channels used for command exchange. The session acts as an abstraction layer that enables the client to construct multi-operation commands and reliably transmit them to the server-side executor. Furthermore, the session provides mechanisms to handle retries and error notifications, ensuring robust interaction in the presence of transient failures.
+```bash
+├── common/           # Shared utilities and types
+│   ├── id.rs         # ID generation/management
+│   ├── lib.rs        # Common library exports
+│   └── session.rs    # Client session abstraction
 
-### Server Architecture
+├── rpc/              # RPC/Network communication layer
+│   ├── proto/    
+│   │   └── gateway.proto  # RPC service definitions
+│   └── lib.rs       
 
-The server is architected as a collection of modular components that collaborate to process and execute key-value (KV) operations. These components include the Gateway, Executor, Lock Manager, and Database. Each module is designed with clear responsibilities and well-defined interfaces, facilitating scalability and ease of maintenance.
+├── server/           # Server implementation
+│   └── src/
+│       ├── database.rs     # Core KV store implementation
+│       ├── executor.rs     # Command execution logic
+│       ├── gateway.rs      # RPC service interface
+│       ├── lock_manager.rs # Concurrency control
+│       └── main.rs      
 
-#### Gateway
+├── client/           # Terminal interaction 
+│   └── src/
+│       └── main.rs  
 
-The gateway serves as the initial contact point for all incoming RPC requests. Its primary responsibility is to establish a connection with clients and to forward the resultant data stream to the executor component. By decoupling connection management from command execution, the gateway ensures that the system can efficiently handle a high volume of concurrent client connections.
+├── benchmark/        # Stdin/out interaction
+    └── src/
+        └── main.rs  
+```
 
-#### Executor
+![System Architecture](plots/architecture.jpg)
 
-Upon receiving a forwarded connection from the gateway, the executor spawns dedicated worker threads to manage client-specific command streams. Each worker thread listens for incoming KV operations and is responsible for orchestrating the execution pipeline. This pipeline involves calculating the read and write sets for each command, interacting with the lock manager to acquire the necessary locks, executing the operations against the underlying database, and subsequently releasing the locks. The executor also consolidates the results of the executed operations and transmits the final response back to the client. This modular approach allows for fine-grained control over concurrency and fault tolerance during command execution.
+### 1.2 Client
 
-#### Lock Manager
+The client component establishes and maintains communication with the server's gateway via remote procedure calls (RPC). The client constructs multi-operation commands and reliably transmits them to the server-side executor. The client also handles retries and error notifications, ensuring robust interaction during transient failures.
 
-The lock manager enforces concurrency control by implementing a hybrid locking mechanism that supports both shared and exclusive locks. When a worker thread requests locks for a given command, the lock manager examines the existing lock state and determines whether the command can be granted immediate access or must wait due to conflicts. In cases of conflict, younger transactions (i.e., those with higher command IDs) may be aborted to favor older transactions, thereby ensuring serializability and minimizing potential deadlocks. Once a command completes execution or is aborted, the lock manager is responsible for releasing the held locks and promoting waiting commands if applicable.
+### 1.3 Server
 
-#### Database
+The server has a modular component collection that processes and executes KV commands. These components include the Gateway, Executor, Lock Manager, and Database.
 
-The database module encapsulates the core key-value store functionality. It is designed to execute a variety of operations (e.g., PUT, GET, SWAP, DELETE, SCAN) with high efficiency. Notably, the database operates independently of the locking mechanism; it assumes that the executor has already coordinated lock acquisition. This separation of concerns simplifies the database's implementation and enhances overall system performance.
+#### 1.3.1 Gateway
+
+The gateway serves as the initial contact point for all incoming RPC requests. It establishes a client connection and forwards the command result stream to the executor component. By decoupling connection management from command execution, the gateway ensures the system can efficiently handle a high volume of concurrent client connections.
+
+#### 1.3.2 Executor
+
+Upon receiving a forwarded connection from the gateway, the executor spawns dedicated worker threads to manage client-specific command streams. 
+
+Each worker thread listens to incoming KV operations and executes the pipeline. This pipeline involves calculating each command's read and write sets, interacting with the lock manager to acquire the necessary locks, executing the operations against the underlying database, and releasing the locks. 
+
+The executor also consolidates the results of the executed operations and transmits the final response back to the client. 
+
+#### 1.3.3 Lock Manager
+
+The lock manager controls concurrency by implementing a wound-wait locking mechanism. 
+
+When a worker thread requests locks for a given command, the lock manager determines whether it can be granted immediate access or must wait due to conflicts. In cases of conflict, younger transactions (i.e., those with higher command IDs) may be aborted to favor older transactions, thereby ensuring serializability and avoiding deadlocks. 
+
+Once a command completes execution or is aborted, the lock manager releases the corresponding locks and promotes waiting commands if applicable.
+
+#### 1.3.4 Database
+
+The database module has the core key-value store functionality. Currently, the database uses an in-memory B-tree as the data structure. Notably, the database operates independently of the locking mechanism; it assumes that the executor has already coordinated lock acquisition.
+
+### 1.4 RPC protocol
+
+Clients establish a bidirectional streaming connection with server using `ConnectExecutor`.
+
+Client send `Command` to Server, which contains a list of operations (GET/PUT/SWAP/SCAN/DELETE), each operation has a name and arguments.
+
+Server responds `CommandResult` to Client, which contains results of each operation, execution status (COMMITTED or ABORTED) and any possible error information.
 
 ## Self-provided Testcases
 
