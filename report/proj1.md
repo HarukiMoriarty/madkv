@@ -80,9 +80,31 @@ Server responds `CommandResult` to Client, which contains results of each operat
 
 <u>Found the following testcase results:</u> 1, 2, 3, 4, 5
 
+The input of each testcase can be found in the directory `traces/`, and the output logs of server are in directory `measurements/tests/`.
+
 ### 2.1 Explanations
 
-*FIXME: add your explanations of each testcase*
+#### 2.1.1 Testcase 1
+
+This trace demonstrates all core KV operations—`PUT`, `GET`, `SWAP`, `DELETE`, and `SCAN`—in a single-client setting.
+
+The log confirms that the server correctly handles newly inserted keys versus missing ones (reporting `not_found` or `null`), how `SWAP` returns the old value while updating to a new one, and includes `SCAN` ranges that produce both a valid list of results and an empty set.
+
+#### 2.1.2 Testcase 2
+
+This single-client trace includes consecutive `DELETE`s on the same key (first `found`, then `not_found`), and a `SCAN` that returns more than one key before another `SCAN` yields nothing.
+
+#### 2.1.3 Testcase 3
+
+In this multi-client scenario, each client uses disjoint key prefixes (`C1_`, `C2_`, `C3_`) to avoid conflicts. The operations are similar to the single-client tests (covering `PUT`, `GET`, `SWAP`, `DELETE`, `SCAN`), and the results show that the server can properly handle the concurrency.
+
+#### 2.1.4 Testcase 4
+
+This multi-client test contains three clients all operating on the same key (`sharedKey`), causing overlaps in `PUT`, `SWAP`, and `DELETE` operations. From the log, we can see that the server provides concurrency and shows the cross-client interference: each client’s changes immediately affect the key’s value and are observable in subsequent GET or SCAN operations by any other client.
+
+#### 2.1.5 Testcase 5
+
+In testcase 5, four different clients repeatedly operate on the same key (sharedKey) with all operations. They attempt reads on missing keys, perform consecutive deletes, and execute scans both with and without matching entries. This ensures robust coverage of concurrency behaviors and correct propagation of each client’s modifications in a shared keyspace.
 
 ## 3 Fuzz Testing
 
@@ -96,7 +118,7 @@ num_clis | conflict | outcome
 
 ### 3.1 Comments
 
-*FIXME: add your comments on fuzz testing*
+These fuzz tests examined the KV store with large numbers of randomly generated operations. The first single-client test confirmed basic correctness in a non-concurrent environment. In test two , the result showed the server can work well under concurrency. The fianl test running multi-clients with conflict operations validated that the server can maintain consistency among clients.
 
 ## 4 YCSB Benchmarking
 
