@@ -1,24 +1,42 @@
-DELETE C1_wRsvBy not_found
-GET C1_92Nhuq null
-SWAP C1_0PX51T null
-DELETE C1_z4PlQp not_found
-PUT C1_HnUPcb not_found
-PUT C1_sFd52Y not_found
+PUT C2_keyA not_found
+GET C2_keyA valA2
+SWAP C2_keyA valA2
+GET C2_keyA valB2
+DELETE C2_keyA found
+GET C2_keyA null
+PUT C2_keyA not_found
+GET missingKey2 null
+SCAN C2_keyA C2_keyZ BEGIN
+  C2_keyA valC2
+SCAN END
+SCAN zzz zzzz BEGIN
+SCAN END
 STOP
-SCAN C3_95obKt C3_XKvCZG BEGIN
+PUT C3_alpha not_found
+GET C3_alpha alphaVal
+GET missingKey3 null
+SWAP C3_alpha alphaVal
+GET C3_alpha alphaVal2
+DELETE C3_alpha found
+GET C3_alpha null
+PUT C3_alpha not_found
+SCAN C3_alpha C3_alphaZ BEGIN
+  C3_alpha alphaVal3
 SCAN END
-SWAP C3_msD6aa null
-SWAP C3_DswX5R null
-SCAN C3_ZClH53 C3_b2zhKN BEGIN
+SCAN C3_zzz C3_zzzz BEGIN
 SCAN END
-GET C3_ancmuK null
-SWAP C3_IcEqOI null
 STOP
-SWAP C2_fD5scl null
-DELETE C2_c5Qeng not_found
-SCAN C2_AURmEE C2_Y6xtZ4 BEGIN
+PUT C1_keyA not_found
+GET C1_keyA valA
+GET missingKey null
+SWAP C1_keyA valA
+GET C1_keyA valB
+DELETE C1_keyA found
+GET C1_keyA null
+PUT C1_keyA not_found
+SCAN C1_keyA C1_keyZ BEGIN
+  C1_keyA valC
 SCAN END
-PUT C2_8rqyVI not_found
-SWAP C2_7br4rX null
-SWAP C2_BgP980 null
+SCAN C1_zzz C1_zzzz BEGIN
+SCAN END
 STOP

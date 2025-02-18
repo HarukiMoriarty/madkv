@@ -1,12 +1,14 @@
-SWAP i76763 null
-PUT zaqbiz not_found
-SCAN 4ysWI2 QPnX42 BEGIN
+PUT keyA not_found
+GET keyA valA
+GET missingKey null
+SWAP keyA valA
+GET keyA valB
+DELETE keyA found
+GET keyA null
+PUT keyA not_found
+SCAN keyA keyZ BEGIN
+  keyA valC
 SCAN END
-PUT DEEd4G not_found
-PUT sc1928 not_found
-PUT AEHGAX not_found
-SWAP 3lApWp null
-PUT g2mBU0 not_found
-SWAP vzmH1K null
-GET pm84dy null
+SCAN zzz zzzz BEGIN
+SCAN END
 STOP

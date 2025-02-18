@@ -1,28 +1,42 @@
-GET BQWTFz null
-GET ckQv87 null
-DELETE 0E83ah not_found
-PUT dRXzNX not_found
-PUT itbRlH not_found
-GET PbLtpO null
+PUT sharedKey not_found
+GET sharedKey val1
+GET missingKey null
+SWAP sharedKey val1
+GET sharedKey val2
+DELETE sharedKey found
+GET sharedKey null
+PUT sharedKey not_found
+SCAN sharedKey sharedKeyZ BEGIN
+  sharedKey val3
+SCAN END
+SCAN zzz zzzz BEGIN
+SCAN END
 STOP
-GET BQWTFz null
-SCAN 0E83ah ckQv87 BEGIN
+GET sharedKey val3
+PUT sharedKey found
+SWAP sharedKey val2_C2
+GET sharedKey val2_C2_new
+DELETE sharedKey found
+GET sharedKey null
+PUT sharedKey not_found
+GET missingKey null
+SCAN sharedKey sharedKeyZ BEGIN
+  sharedKey val2_C2_final
 SCAN END
-PUT 0E83ah not_found
-SCAN dRXzNX itbRlH BEGIN
-  dRXzNX h8LI0T
-  itbRlH CQv2Qs
+SCAN zzz zzzz BEGIN
 SCAN END
-SCAN PbLtpO itbRlH BEGIN
-  dRXzNX h8LI0T
-  itbRlH CQv2Qs
-SCAN END
-SWAP PbLtpO null
 STOP
-PUT BQWTFz not_found
-SWAP ckQv87 null
-PUT 0E83ah found
-GET dRXzNX h8LI0T
-SWAP itbRlH CQv2Qs
-SWAP PbLtpO kU0Yo6
+GET sharedKey val2_C2_final
+DELETE sharedKey found
+PUT sharedKey not_found
+GET sharedKey val3_C3
+SWAP sharedKey val3_C3
+GET sharedKey val3_C3_new
+SCAN sharedKey sharedKeyz BEGIN
+  sharedKey val3_C3_new
+SCAN END
+GET missingKeyC3 null
+DELETE sharedKey found
+SCAN zzz zzzz BEGIN
+SCAN END
 STOP

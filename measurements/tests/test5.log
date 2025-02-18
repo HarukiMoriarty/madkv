@@ -1,61 +1,56 @@
-DELETE XlA5Zp not_found
-SWAP 6vjcRW null
-SWAP wBudIR null
-SCAN JSAdLs sBeSjU BEGIN
+GET sharedKey null
+SWAP sharedKey null
+PUT sharedKey found
+GET sharedKey valA_c4
+DELETE sharedKey found
+GET sharedKey null
+PUT sharedKey not_found
+SCAN sharedKey sharedKeyX BEGIN
+  sharedKey valC_c4
 SCAN END
-DELETE sBeSjU not_found
-GET nz14hA null
-PUT WMJbUb not_found
-SWAP nJmHQu null
-STOP
-SWAP XlA5Zp null
-SWAP 6vjcRW HXTXmy
-SWAP wBudIR c70y1R
-DELETE JSAdLs not_found
-SWAP sBeSjU null
-PUT nz14hA not_found
-SCAN WMJbUb nJmHQu BEGIN
-  WMJbUb XTk9dN
-  XlA5Zp iGO1v8
-  nJmHQu vAUUl5
-SCAN END
-SWAP nJmHQu vAUUl5
-STOP
-PUT XlA5Zp found
-PUT 6vjcRW found
-SCAN JSAdLs wBudIR BEGIN
-  WMJbUb XTk9dN
-  XlA5Zp tqHXz3
-  nJmHQu P6FiHE
-  nz14hA SyP7ID
-  sBeSjU wzAzPh
-  wBudIR fRMnJj
-SCAN END
-DELETE JSAdLs not_found
-PUT sBeSjU found
-DELETE nz14hA found
-SCAN WMJbUb nJmHQu BEGIN
-  WMJbUb XTk9dN
-  XlA5Zp tqHXz3
-  nJmHQu P6FiHE
-SCAN END
-SCAN XlA5Zp nJmHQu BEGIN
-  XlA5Zp tqHXz3
-  nJmHQu P6FiHE
+GET missing4 null
+SCAN zzz zzzz BEGIN
 SCAN END
 STOP
-GET XlA5Zp tqHXz3
-DELETE 6vjcRW found
-SCAN JSAdLs wBudIR BEGIN
-  WMJbUb XTk9dN
-  XlA5Zp tqHXz3
-  nJmHQu P6FiHE
-  sBeSjU Qb9gU0
-  wBudIR fRMnJj
+GET sharedKey valC_c4
+PUT sharedKey found
+GET missing2 null
+SWAP sharedKey valA_c2
+SCAN sharedKey sharedKeyZ BEGIN
+  sharedKey valB_c2
 SCAN END
-PUT JSAdLs not_found
-PUT sBeSjU found
-DELETE nz14hA not_found
-GET WMJbUb XTk9dN
-PUT nJmHQu found
+DELETE sharedKey found
+PUT sharedKey not_found
+GET sharedKey valC_c2
+SCAN zzz zzzz BEGIN
+SCAN END
+DELETE sharedKey found
+STOP
+PUT sharedKey not_found
+GET sharedKey valA_c1
+SWAP sharedKey valA_c1
+GET sharedKey valB_c1
+DELETE sharedKey found
+GET sharedKey null
+PUT sharedKey not_found
+SCAN sharedKey sharedKeyZ BEGIN
+  sharedKey valC_c1
+SCAN END
+SCAN zzz zzzz BEGIN
+SCAN END
+GET missing1 null
+STOP
+PUT sharedKey found
+SWAP sharedKey valA_c3
+GET sharedKey valB_c3
+DELETE sharedKey found
+GET sharedKey null
+PUT sharedKey not_found
+SCAN sharedKey zsharedKey BEGIN
+  sharedKey valC_c3
+SCAN END
+GET missing3 null
+DELETE missing3 not_found
+SCAN zzz zzzz BEGIN
+SCAN END
 STOP

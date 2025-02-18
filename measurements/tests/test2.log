@@ -1,16 +1,17 @@
-SCAN TaD6jH XVgBjE BEGIN
+PUT k1 not_found
+GET k1 v1
+PUT k2 not_found
+GET not_found null
+SWAP k1 v1
+GET k1 v1_new
+DELETE k2 found
+DELETE k2 not_found
+PUT k3 not_found
+SCAN k1 kzz BEGIN
+  k1 v1_new
+  k3 v3
 SCAN END
-GET 4PJ4NX null
-DELETE aiESdr not_found
-SCAN 1I08rf W6LDXw BEGIN
+SCAN zzz zzzz BEGIN
 SCAN END
-DELETE 6Nh6KW not_found
-DELETE ktaRPw not_found
-DELETE ETcNX9 not_found
-SWAP wU3NF2 null
-SWAP 27vjUD null
-PUT AsWSl9 not_found
-SCAN H53PeT Mil12c BEGIN
-SCAN END
-DELETE fR76XB not_found
+GET k3 v3
 STOP
