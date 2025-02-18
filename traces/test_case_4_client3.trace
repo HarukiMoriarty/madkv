@@ -1,7 +1,11 @@
-GET BQWTFz
-GET ckQv87
-DELETE 0E83ah
-PUT dRXzNX h8LI0T
-PUT itbRlH CQv2Qs
-GET PbLtpO
+GET sharedKey
+DELETE sharedKey
+PUT sharedKey val3_C3
+GET sharedKey
+SWAP sharedKey val3_C3_new
+GET sharedKey
+SCAN sharedKey sharedKeyz
+GET missingKeyC3
+DELETE sharedKey
+SCAN zzz zzzz
 STOP

@@ -1,9 +1,11 @@
-PUT XlA5Zp tqHXz3
-PUT 6vjcRW QVl0Th
-SCAN JSAdLs wBudIR
-DELETE JSAdLs
-PUT sBeSjU Qb9gU0
-DELETE nz14hA
-SCAN WMJbUb nJmHQu
-SCAN XlA5Zp nJmHQu
+PUT sharedKey valA_c3
+SWAP sharedKey valB_c3
+GET sharedKey
+DELETE sharedKey
+GET sharedKey
+PUT sharedKey valC_c3
+SCAN sharedKey zsharedKey
+GET missing3
+DELETE missing3
+SCAN zzz zzzz
 STOP

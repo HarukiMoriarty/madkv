@@ -1,7 +1,11 @@
-SCAN C3_95obKt C3_XKvCZG
-SWAP C3_msD6aa BY0OnT
-SWAP C3_DswX5R 4LDLLO
-SCAN C3_ZClH53 C3_b2zhKN
-GET C3_ancmuK
-SWAP C3_IcEqOI 57bjCt
+PUT C3_alpha alphaVal
+GET C3_alpha
+GET missingKey3
+SWAP C3_alpha alphaVal2
+GET C3_alpha
+DELETE C3_alpha
+GET C3_alpha
+PUT C3_alpha alphaVal3
+SCAN C3_alpha C3_alphaZ
+SCAN C3_zzz C3_zzzz
 STOP

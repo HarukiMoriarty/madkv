@@ -1,7 +1,11 @@
-GET BQWTFz
-SCAN 0E83ah ckQv87
-PUT 0E83ah 76KtGs
-SCAN dRXzNX itbRlH
-SCAN PbLtpO itbRlH
-SWAP PbLtpO kU0Yo6
+PUT sharedKey val1
+GET sharedKey
+GET missingKey
+SWAP sharedKey val2
+GET sharedKey
+DELETE sharedKey
+GET sharedKey
+PUT sharedKey val3
+SCAN sharedKey sharedKeyZ
+SCAN zzz zzzz
 STOP

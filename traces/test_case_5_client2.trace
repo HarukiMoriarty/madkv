@@ -1,9 +1,11 @@
-GET XlA5Zp
-DELETE 6vjcRW
-SCAN JSAdLs wBudIR
-PUT JSAdLs E7hMuB
-PUT sBeSjU VgDujD
-DELETE nz14hA
-GET WMJbUb
-PUT nJmHQu aMMwt3
+GET sharedKey
+PUT sharedKey valA_c2
+GET missing2
+SWAP sharedKey valB_c2
+SCAN sharedKey sharedKeyZ
+DELETE sharedKey
+PUT sharedKey valC_c2
+GET sharedKey
+SCAN zzz zzzz
+DELETE sharedKey
 STOP

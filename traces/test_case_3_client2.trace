@@ -1,7 +1,11 @@
-SWAP C2_fD5scl 9lS1DG
-DELETE C2_c5Qeng
-SCAN C2_AURmEE C2_Y6xtZ4
-PUT C2_8rqyVI TS8VZy
-SWAP C2_7br4rX YWgNJc
-SWAP C2_BgP980 2JGR2i
+PUT C2_keyA valA2
+GET C2_keyA
+SWAP C2_keyA valB2
+GET C2_keyA
+DELETE C2_keyA
+GET C2_keyA
+PUT C2_keyA valC2
+GET missingKey2
+SCAN C2_keyA C2_keyZ
+SCAN zzz zzzz
 STOP

@@ -1,7 +1,11 @@
-PUT BQWTFz QzuKnX
-SWAP ckQv87 ouR5io
-PUT 0E83ah tzzcQF
-GET dRXzNX
-SWAP itbRlH C2HgZP
-SWAP PbLtpO CSyUqV
+GET sharedKey
+PUT sharedKey val2_C2
+SWAP sharedKey val2_C2_new
+GET sharedKey
+DELETE sharedKey
+GET sharedKey
+PUT sharedKey val2_C2_final
+GET missingKey
+SCAN sharedKey sharedKeyZ
+SCAN zzz zzzz
 STOP

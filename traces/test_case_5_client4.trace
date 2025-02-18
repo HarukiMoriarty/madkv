@@ -1,9 +1,11 @@
-SWAP XlA5Zp iGO1v8
-SWAP 6vjcRW h4MPmQ
-SWAP wBudIR fRMnJj
-DELETE JSAdLs
-SWAP sBeSjU wzAzPh
-PUT nz14hA SyP7ID
-SCAN WMJbUb nJmHQu
-SWAP nJmHQu P6FiHE
+GET sharedKey
+SWAP sharedKey valB_c4
+PUT sharedKey valA_c4
+GET sharedKey
+DELETE sharedKey
+GET sharedKey
+PUT sharedKey valC_c4
+SCAN sharedKey sharedKeyX
+GET missing4
+SCAN zzz zzzz
 STOP

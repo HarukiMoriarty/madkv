@@ -1,7 +1,11 @@
-DELETE C1_wRsvBy
-GET C1_92Nhuq
-SWAP C1_0PX51T DRKbHw
-DELETE C1_z4PlQp
-PUT C1_HnUPcb USnbnm
-PUT C1_sFd52Y 3IxP0N
+PUT C1_keyA valA
+GET C1_keyA
+GET missingKey
+SWAP C1_keyA valB
+GET C1_keyA
+DELETE C1_keyA
+GET C1_keyA
+PUT C1_keyA valC
+SCAN C1_keyA C1_keyZ
+SCAN C1_zzz C1_zzzz
 STOP
