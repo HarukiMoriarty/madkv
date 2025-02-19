@@ -130,15 +130,31 @@ These fuzz tests examined the KV store with large numbers of randomly generated 
 
 ![tput-trend](plots/ycsb-tput-trend.png)
 
-<u>Avg. & P99 latency trend vs. number of clients:</u>
+<u>Avg. latency trend vs. number of clients:</u>
 
 ![lats-trend](plots/ycsb-lats-trend.png)
 
 ### 4.1 Comments
 
-*FIXME: add your discussions of benchmarking results*
+<u>Single-client throughput/latency across workloads:</u>
+
+In a single-client scenario, the graphs show that read-heavy workloads (YCSB-B and YCSB-C) achieve the highest throughput and lowest latency, while mixed or write-intensive workloads like YCSB-A, as well as scan or modify-heavy ones like YCSB-E and YCSB-F, register lower throughput and higher latency due to the additional overhead of processing writes and scans.
+
+<u>Agg. throughput trend vs. number of clients:</u>
+
+As client concurrency increases, throughput initially rises across all workloads, especially for those with predominantly single read/write operations (YCSB-A, C) that can efficiently leverage parallel processing and caching. However, workloads involving scans (YCSB-E) reach a throughput plateau sooner, as increased client numbers lead to contention and resource saturation.
+
+<u>Avg. latency trend vs. number of clients:</u>
+
+The latency trends indicate that average latencies increase with higher client counts, with the rise being more pronounced in scan workloads (YCSB-E). In contrast, read/write-centric workloads (YCSB-C) maintain lower latency levels even as concurrency grows, reflecting efficiency in handling increased load without significant delays.
 
 ## 5 Additional Discussion
 
-*OPTIONAL: add extra discussions if applicable*
+We observe an anomaly in which the latency starts slightly high, decreases, and then increases as more clients are added.
+
+One possible explanation is Nagle's algorithm in TCP, which can be turned off by enabling the TCP_NODELAY socket flag. However, this flag is already enabled by default in Tonic.
+
+The following potential explanation is due to this [issue](https://github.com/hyperium/tonic/issues/1375). In summary, when using server streaming in Tonic, some batching will likely happen based on the channel size. I changed the channel size to 1 to see if the problem goes away. However, when the client is higher than some number, the whole system reaches a bottleneck, and the anomaly is hidden. 
+
+This is not a big issue though, we will come back to it later.
 
