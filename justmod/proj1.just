@@ -70,22 +70,26 @@ kill:
 #       also feel free to add extra parameters to the recipes as you see fit,
 #       but don't change the existing parameters
 
+python_run := if `which uv || true` != "" { "uv run" } else { "python3" }
+tmpdir_prefix := "/tmp/madkv-p1"
+
 # launch a long-running KV store service
 service listen="0.0.0.0:3777":
     just p1::build
     just utils::build
     cargo run -p runner -r --bin service -- \
-        --just-args p1::server "{{listen}}"
+        --server-just-args p1::server "{{listen}}" \
+        --manager-just-args none
 
 # ensure a subdir under 'tmp/' exists
 tmpdir subdir:
-    mkdir -p "/tmp/madkv-p1/{{subdir}}"
+    mkdir -p "{{tmpdir_prefix}}/{{subdir}}"
 
 # run a student-provided testcase
 testcase num server="127.0.0.1:3777": (tmpdir "tests")
     just p1::build
     just "p1::test{{num}}" "{{server}}" \
-        | tee "/tmp/madkv-p1/tests/test{{num}}.log"
+        | tee "{{tmpdir_prefix}}/tests/test{{num}}.log"
     just p1::kill
 
 # run a fuzz testing scenario
@@ -113,4 +117,4 @@ bench nclis wload server="127.0.0.1:3777": (tmpdir "bench")
 
 # generate .md report template from existing results (wip)
 report:
-    python3 sumgen/proj1.py
+    {{python_run}} sumgen/proj1.py

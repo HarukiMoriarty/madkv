@@ -16,7 +16,7 @@ use runner::{ClientProc, KvResp, RunnerError};
 // Hardcoded constants:
 const KEY_LEN: usize = 8;
 const VALUE_LEN: usize = 16;
-const RESP_TIMEOUT: Duration = Duration::from_secs(10);
+const RESP_TIMEOUT: Duration = Duration::from_secs(60);
 const REMAIN_THRESH: usize = 1000;
 
 mod random;
@@ -101,9 +101,9 @@ fn fuzz_test(
             let call = gen_rand_kvcall(&keys[cidx], stats, cidx);
             call_memo[cidx] = (timestamp, call.update_info());
 
-            // println!("calling {:?} @ {}", call, timestamp);
+            // eprintln!("calling {:?} @ {}", call, timestamp);
             clients[cidx].send_call(call)?;
-            // println!("called");
+            // eprintln!("called");
 
             flying.set(cidx, true);
             ops_called += 1;
@@ -111,9 +111,10 @@ fn fuzz_test(
             // harvest a response
             let cidx = gen_rand_client(&flying, true);
 
-            // println!("waiting");
+            // RESP_TIMEOUT should be long enough to prevent false negatives
+            // eprintln!("waiting");
             let resp = clients[cidx].wait_resp(RESP_TIMEOUT)?;
-            // println!("waited {:?} @ {}", resp, timestamp);
+            // eprintln!("waited {:?} @ {}", resp, timestamp);
             if let KvResp::Stop = resp {
                 cprintln!(
                     "<s><red>Unexpected stop response:</></>  client {}  <<{}>>",
@@ -204,12 +205,12 @@ struct Args {
     num_ops: usize,
 
     /// False if use disjoint sets of keys per client, otherwise true.
-    #[arg(short, long, default_value = "false")]
+    #[arg(long, default_value = "false")]
     conflict: bool,
 
     /// Client `just` invocation arguments.
-    #[arg(short, long, num_args(1..))]
-    just_args: Vec<String>,
+    #[arg(long, num_args(1..))]
+    client_just_args: Vec<String>,
 }
 
 fn main() -> Result<(), RunnerError> {
@@ -239,7 +240,7 @@ fn main() -> Result<(), RunnerError> {
     // run clients concurrently
     let mut clients = vec![];
     for _ in 0..args.num_clis {
-        let client = ClientProc::new(args.just_args.iter().map(|s| s.as_str()).collect())?;
+        let client = ClientProc::new(args.client_just_args.iter().map(|s| s.as_str()).collect())?;
         clients.push(client);
     }
 
