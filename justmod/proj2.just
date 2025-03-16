@@ -21,15 +21,17 @@ clean:
 
 # run your KV store manager
 manager man_port="3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779":
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --servers {{servers}} --tables key=10000000
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --servers {{servers}} --tables key=5
+    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --servers {{servers}} --tables usertable_user=18446744073709551615
 
 # run your KV store server
 server id="0" manager="127.0.0.1:3666" api_port="3777" backer_path="./data":
     cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --node-id {{id}} --listen-addr 127.0.0.1:{{api_port}} --manager-addr {{manager}} --db-path {{backer_path}}/{{id}}/db --log-path {{backer_path}}/{{id}}/log --persistence --batch-size 100 --batch-timeout 1000
+    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --node-id {{id}} --listen-addr 127.0.0.1:{{api_port}} --manager-addr {{manager}}
 
 # run you KV store client in stdin/out interface mode
 benchmark manager="127.0.0.1:3666":
-    cargo run --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}}
+    cargo run --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --benchmark-type fuzz
 
 # kill all processes of your KV store system
 kill:
@@ -40,11 +42,11 @@ kill:
     #   TIP: commands such as 'pkill' may return non-zero exit code on success,
     #        which would by default abort the 'just' recipe early; prepend the
     #        command with a '-' sign to ignore its exit code
+    rm -rf data/*
     -pkill -f "Distributed-KV-Store/target/release/server"  > /dev/null 2>&1
     -pkill -f "Distributed-KV-Store/target/release/client"  > /dev/null 2>&1
     -pkill -f "Distributed-KV-Store/target/release/manager"  > /dev/null 2>&1
     -pkill -f "Distributed-KV-Store/target/release/benchmark"  > /dev/null 2>&1
-    rm -rf data/*
 
 # NOTE: feel free to add more recipes as you see fit...
 #       also feel free to add extra parameters to the recipes as you see fit,
@@ -54,7 +56,7 @@ python_run := if `which uv || true` != "" { "uv run" } else { "python3" }
 tmpdir_prefix := "/tmp/madkv-p2"
 
 # launch the KV service components on node (see README for conventions)
-service node="s0" manager="127.0.0.1:3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779" backer_prefix="./backer":
+service node="s0" manager="127.0.0.1:3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779" backer_prefix="./data":
     just p2::build
     just utils::build
     cargo run -p runner -r --bin service -- \
@@ -62,7 +64,7 @@ service node="s0" manager="127.0.0.1:3666" servers="127.0.0.1:3777,127.0.0.1:377
             $({{python_run}} justmod/xtract.py partid "{{node}}") \
             "{{manager}}" \
             $({{python_run}} justmod/xtract.py portof "{{servers}}" "{{node}}") \
-            "{{backer_prefix}}.{{node}}" \
+            "{{backer_prefix}}" \
         --manager-just-args p2::manager \
             $({{python_run}} justmod/xtract.py portof "{{manager}}" "{{node}}") \
             "{{servers}}" \
