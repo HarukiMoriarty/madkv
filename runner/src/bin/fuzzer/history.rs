@@ -226,10 +226,10 @@ impl History {
         ts_resp: u64,
         old_value: Option<&String>,
     ) -> bool {
-        // eprintln!(
-        //     "--- SWAP <{} - {}> {:?} {:?}",
-        //     ts_call, ts_resp, old_value, key_spans
-        // );
+        eprintln!(
+            "--- SWAP <{} - {}> {:?} {:?}",
+            ts_call, ts_resp, old_value, key_spans
+        );
         for cli_spans in key_spans {
             for span in cli_spans.iter().rev() {
                 if span.ts_call < ts_resp && span.value.as_ref() == old_value {
@@ -288,7 +288,7 @@ impl History {
             entries_map.insert(key, value);
         }
 
-        // eprintln!("--- SCAN <{} - {}> loop", ts_call, ts_resp);
+        eprintln!("--- SCAN <{} - {}> loop", ts_call, ts_resp);
         for (key, key_spans) in spans {
             // if key >= key_start && key <= key_end {
             //     println!("... {} {:?} {:?}", key, entries_map.get(key), key_spans);
