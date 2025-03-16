@@ -37,6 +37,34 @@ def repid(args):
     else:
         return node[doti + 1 :]
 
+def ipof(args):
+    """
+    Example: servers = "1.2.3.4:3777,5.6.7.8:3778,9.10.11.12:3779" node = "s0.1" rf = "3"
+    Returns: "5.6.7.8"
+    """
+    if len(args) < 2:
+        raise ValueError("missing argument to 'portof'")
+
+    servers = args[0]
+    ips = list(map(lambda a: a[:a.find(":")], servers.split(",")))
+
+    pid = int(partid(args[1:]))
+    rid = int(repid(args[1:]))
+    rf = 1
+    if len(args) >= 3:
+        rf = int(args[2])
+    elif pid == 0:  # may be managers list
+        rf = len(ips)
+
+    node = pid * rf + rid
+    if node >= len(ips):
+        return ""  # ignore out-of-bounds here
+
+    ip = ips[node].strip()
+    if len(ip) == 0:
+        raise ValueError(f"node {args[1]}'s API port is empty")
+
+    return ip
 
 def portof(args):
     """
@@ -108,6 +136,8 @@ def main():
         print(portof(sys.argv[2:]))
     elif sys.argv[1] == "peersof":
         print(peersof(sys.argv[2:]))
+    elif sys.argv[1] == "ipof":
+        print(ipof(sys.argv[2:]))
 
 
 if __name__ == "__main__":
