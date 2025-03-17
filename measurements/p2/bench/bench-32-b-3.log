@@ -1,0 +1,13 @@
+[33m[1mYCSB benchmark configuration:[39m[22m Args {
+    num_clis: 32,
+    num_ops: 10000,
+    workload: 'b',
+    client_just_args: [
+        "p2::benchmark",
+        "127.0.0.1:3666",
+    ],
+}
+[33m[1mBenchmarking [Load] phase...[39m[22m
+  Launched 32 YCSB drivers, now waiting...
+[33m[1mBenchmarking [Run] phase...[39m[22m
+  Launched 32 YCSB drivers, now waiting...
