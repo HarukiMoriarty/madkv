@@ -20,9 +20,9 @@ clean:
     cargo clean --release
 
 # run your KV store manager
-manager man_port="3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779":
-    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables key=5
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables usertable_user=12297829382473034410
+manager man_port="3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779" tables="key=5":
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables {{tables}}
+    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables usertable_user=12297829382473034410
 
 # run your KV store server
 server id="0" manager="127.0.0.1:3666" api_ip="127.0.0.1" api_port="3777" backer_path="./data":
@@ -78,7 +78,9 @@ tmpdir subdir:
 testcase manager="127.0.0.1:3666": (tmpdir "tests")
     just p2::build
     just utils::build
-    ./scripts/p2-test.sh
+    ./scripts/p2-test.sh \
+        | tee "{{tmpdir_prefix}}/tests/self-test.log"
+    echo "Self-test completed"
     just p2::kill
 
 # run a fuzz testing scenario

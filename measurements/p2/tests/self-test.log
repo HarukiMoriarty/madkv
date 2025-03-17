@@ -1,0 +1,342 @@
+=== Starting Partitioned Cluster Test ===
+Starting manager...
+[2m2025-03-17T03:59:38.074183Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3777 assigned table key partition range: 0 to 5
+[2m2025-03-17T03:59:38.074229Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3778 assigned table key partition range: 5 to 10
+[2m2025-03-17T03:59:38.074239Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3779 assigned table key partition range: 10 to 15
+[2m2025-03-17T03:59:38.074248Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Manager initialized with 3 servers, tables: key=15
+[2m2025-03-17T03:59:38.074257Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Starting manager service on 0.0.0.0:3666
+Starting server partitions...
+[33m[1mService launch configuration:[39m[22m Args {
+    node_id: "s0",
+    server_just_args: [
+        "p2::server",
+        "0",
+        "127.0.0.1:3666",
+        "127.0.0.1",
+        "3777",
+        "./data",
+    ],
+    manager_just_args: [
+        "p2::manager",
+        "3666",
+        "127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779",
+    ],
+}
+[33m[1mStarting server s0...[39m[22m
+  Launched...
+[2m2025-03-17T03:59:42.128158Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server configuration: ServerConfig {
+    node_id: NodeId(
+        0,
+    ),
+    listen_addr: "127.0.0.1:3777",
+    db_path: Some(
+        "./data/0/db",
+    ),
+    log_path: Some(
+        "./data/0/log",
+    ),
+    manager_addr: "127.0.0.1:3666",
+    persistence_enabled: true,
+    batch_size: Some(
+        100,
+    ),
+    batch_timeout_ms: Some(
+        1000,
+    ),
+    table_name: {},
+    partition_info: {},
+    log_seg_entry_size: 1048576,
+}
+[2m2025-03-17T03:59:42.129940Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3777 registered with 1 table partitions
+[2m2025-03-17T03:59:42.130504Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server assigned table 'key' partition range: 0 to 5
+[2m2025-03-17T03:59:42.130526Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server registered with 1 tables
+[2m2025-03-17T03:59:42.155574Z[0m [32m INFO[0m [2mserver::database[0m[2m:[0m Loaded 0 entries into 1 tables from storage
+[2m2025-03-17T03:59:42.158058Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started executor service
+[2m2025-03-17T03:59:42.168901Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started storage service
+[2m2025-03-17T03:59:42.168996Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Successfully opened log at ./data/0/log
+[2m2025-03-17T03:59:42.169006Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Loaded 0 log entries
+[2m2025-03-17T03:59:42.169009Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started log manager service
+[2m2025-03-17T03:59:42.169011Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started lock manager service
+[2m2025-03-17T03:59:42.169013Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Starting gateway server on 127.0.0.1:3777
+[2m2025-03-17T03:59:42.169111Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Log manager started
+[2m2025-03-17T03:59:42.169149Z[0m [32m INFO[0m [2mserver::lock_manager[0m[2m:[0m Lock manager started
+[33m[1mService launch configuration:[39m[22m Args {
+    node_id: "s1",
+    server_just_args: [
+        "p2::server",
+        "1",
+        "127.0.0.1:3666",
+        "127.0.0.1",
+        "3778",
+        "./data",
+    ],
+    manager_just_args: [
+        "p2::manager",
+        "127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779",
+    ],
+}
+[33m[1mStarting server s1...[39m[22m
+  Launched...
+[2m2025-03-17T03:59:45.135705Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server configuration: ServerConfig {
+    node_id: NodeId(
+        1,
+    ),
+    listen_addr: "127.0.0.1:3778",
+    db_path: Some(
+        "./data/1/db",
+    ),
+    log_path: Some(
+        "./data/1/log",
+    ),
+    manager_addr: "127.0.0.1:3666",
+    persistence_enabled: true,
+    batch_size: Some(
+        100,
+    ),
+    batch_timeout_ms: Some(
+        1000,
+    ),
+    table_name: {},
+    partition_info: {},
+    log_seg_entry_size: 1048576,
+}
+[2m2025-03-17T03:59:45.137351Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3778 registered with 1 table partitions
+[2m2025-03-17T03:59:45.137876Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server assigned table 'key' partition range: 5 to 10
+[2m2025-03-17T03:59:45.137890Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server registered with 1 tables
+[2m2025-03-17T03:59:45.162649Z[0m [32m INFO[0m [2mserver::database[0m[2m:[0m Loaded 0 entries into 1 tables from storage
+[2m2025-03-17T03:59:45.165361Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started executor service
+[2m2025-03-17T03:59:45.176360Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started storage service
+[2m2025-03-17T03:59:45.176467Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Successfully opened log at ./data/1/log
+[2m2025-03-17T03:59:45.176476Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Loaded 0 log entries
+[2m2025-03-17T03:59:45.176482Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started log manager service
+[2m2025-03-17T03:59:45.176485Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started lock manager service
+[2m2025-03-17T03:59:45.176487Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Starting gateway server on 127.0.0.1:3778
+[2m2025-03-17T03:59:45.176550Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Log manager started
+[2m2025-03-17T03:59:45.176592Z[0m [32m INFO[0m [2mserver::lock_manager[0m[2m:[0m Lock manager started
+[33m[1mService launch configuration:[39m[22m Args {
+    node_id: "s2",
+    server_just_args: [
+        "p2::server",
+        "2",
+        "127.0.0.1:3666",
+        "127.0.0.1",
+        "3779",
+        "./data",
+    ],
+    manager_just_args: [
+        "p2::manager",
+        "127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779",
+    ],
+}
+[33m[1mStarting server s2...[39m[22m
+  Launched...
+[2m2025-03-17T03:59:48.079445Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server configuration: ServerConfig {
+    node_id: NodeId(
+        2,
+    ),
+    listen_addr: "127.0.0.1:3779",
+    db_path: Some(
+        "./data/2/db",
+    ),
+    log_path: Some(
+        "./data/2/log",
+    ),
+    manager_addr: "127.0.0.1:3666",
+    persistence_enabled: true,
+    batch_size: Some(
+        100,
+    ),
+    batch_timeout_ms: Some(
+        1000,
+    ),
+    table_name: {},
+    partition_info: {},
+    log_seg_entry_size: 1048576,
+}
+[2m2025-03-17T03:59:48.081008Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3779 registered with 1 table partitions
+[2m2025-03-17T03:59:48.081504Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server assigned table 'key' partition range: 10 to 15
+[2m2025-03-17T03:59:48.081515Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server registered with 1 tables
+[2m2025-03-17T03:59:48.096225Z[0m [32m INFO[0m [2mserver::database[0m[2m:[0m Loaded 0 entries into 1 tables from storage
+[2m2025-03-17T03:59:48.098992Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started executor service
+[2m2025-03-17T03:59:48.108300Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started storage service
+[2m2025-03-17T03:59:48.108390Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Successfully opened log at ./data/2/log
+[2m2025-03-17T03:59:48.108400Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Loaded 0 log entries
+[2m2025-03-17T03:59:48.108402Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started log manager service
+[2m2025-03-17T03:59:48.108408Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started lock manager service
+[2m2025-03-17T03:59:48.108410Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Starting gateway server on 127.0.0.1:3779
+[2m2025-03-17T03:59:48.108500Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Log manager started
+[2m2025-03-17T03:59:48.108500Z[0m [32m INFO[0m [2mserver::lock_manager[0m[2m:[0m Lock manager started
+=== Running trace before kill ===
+PUT key00000 not_found
+PUT key00001 not_found
+PUT key00002 not_found
+PUT key00003 not_found
+PUT key00004 not_found
+PUT key00005 not_found
+PUT key00006 not_found
+PUT key00007 not_found
+PUT key00008 not_found
+PUT key00009 not_found
+PUT key00010 not_found
+PUT key00011 not_found
+PUT key00012 not_found
+PUT key00013 not_found
+PUT key00014 not_found
+SWAP key00000 value0
+SWAP key00002 value2
+SWAP key00005 value5
+SWAP key00008 value8
+SWAP key00010 value10
+SWAP key00013 value13
+GET key00000 value0_updated
+GET key00003 value3
+GET key00005 value5_updated
+GET key00008 value8_updated
+GET key00010 value10_updated
+GET key00013 value13_updated
+SCAN key00000 key00004 BEGIN
+  key00000 value0_updated
+  key00001 value1
+  key00002 value2_updated
+  key00003 value3
+  key00004 value4
+SCAN END
+SCAN key00005 key00009 BEGIN
+  key00005 value5_updated
+  key00006 value6
+  key00007 value7
+  key00008 value8_updated
+  key00009 value9
+SCAN END
+SCAN key00010 key00014 BEGIN
+  key00010 value10_updated
+  key00011 value11
+  key00012 value12
+  key00013 value13_updated
+  key00014 value14
+SCAN END
+SCAN key00000 key00014 BEGIN
+key00000 value0_updated
+key00001 value1
+key00002 value2_updated
+key00003 value3
+key00004 value4
+key00005 value5_updated
+key00006 value6
+key00007 value7
+key00008 value8_updated
+key00009 value9
+key00010 value10_updated
+key00011 value11
+key00012 value12
+key00013 value13_updated
+key00014 value14
+SCAN END
+SCAN key00003 key00011 BEGIN
+key00003 value3
+key00004 value4
+key00005 value5_updated
+key00006 value6
+key00007 value7
+key00008 value8_updated
+key00009 value9
+key00010 value10_updated
+key00011 value11
+SCAN END
+STOP
+[2m2025-03-17T03:59:50.134393Z[0m [33m WARN[0m [2mserver::executor[0m[2m:[0m Error receiving command: status: Unknown, message: "h2 protocol error: error reading a body from connection", details: [], metadata: MetadataMap { headers: {} }
+[2m2025-03-17T03:59:50.134393Z[0m [33m WARN[0m [2mserver::executor[0m[2m:[0m Error receiving command: status: Unknown, message: "h2 protocol error: error reading a body from connection", details: [], metadata: MetadataMap { headers: {} }
+First trace completed
+=== Killing server 1 ===
+=== Running trace after kill ===
+Second trace completed
+=== Restarting server 1 ===
+[33m[1mService launch configuration:[39m[22m Args {
+    node_id: "s1",
+    server_just_args: [
+        "p2::server",
+        "1",
+        "127.0.0.1:3666",
+        "127.0.0.1",
+        "3778",
+        "./data",
+    ],
+    manager_just_args: [
+        "p2::manager",
+        "127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779",
+    ],
+}
+[33m[1mStarting server s1...[39m[22m
+  Launched...
+[2m2025-03-17T04:00:04.684695Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server configuration: ServerConfig {
+    node_id: NodeId(
+        1,
+    ),
+    listen_addr: "127.0.0.1:3778",
+    db_path: Some(
+        "./data/1/db",
+    ),
+    log_path: Some(
+        "./data/1/log",
+    ),
+    manager_addr: "127.0.0.1:3666",
+    persistence_enabled: true,
+    batch_size: Some(
+        100,
+    ),
+    batch_timeout_ms: Some(
+        1000,
+    ),
+    table_name: {},
+    partition_info: {},
+    log_seg_entry_size: 1048576,
+}
+[2m2025-03-17T04:00:04.686270Z[0m [32m INFO[0m [2mmanager::service[0m[2m:[0m Server 127.0.0.1:3778 registered with 1 table partitions
+[2m2025-03-17T04:00:04.686902Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server assigned table 'key' partition range: 5 to 10
+[2m2025-03-17T04:00:04.686925Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Server registered with 1 tables
+[2m2025-03-17T04:00:04.711482Z[0m [32m INFO[0m [2mserver::database[0m[2m:[0m Loaded 0 entries into 1 tables from storage
+[2m2025-03-17T04:00:04.713886Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started executor service
+[2m2025-03-17T04:00:04.725157Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started storage service
+[2m2025-03-17T04:00:04.725227Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Successfully opened log at ./data/1/log
+[2m2025-03-17T04:00:04.725234Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Loaded 7 log entries
+[2m2025-03-17T04:00:04.725247Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started log manager service
+[2m2025-03-17T04:00:04.725250Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Started lock manager service
+[2m2025-03-17T04:00:04.725252Z[0m [32m INFO[0m [2mserver[0m[2m:[0m Starting gateway server on 127.0.0.1:3778
+[2m2025-03-17T04:00:04.725373Z[0m [32m INFO[0m [2mserver::log_manager::manager[0m[2m:[0m Log manager started
+[2m2025-03-17T04:00:04.725401Z[0m [32m INFO[0m [2mserver::lock_manager[0m[2m:[0m Lock manager started
+=== Running trace after recovery ===
+GET key00005 value5_updated
+GET key00006 value6
+GET key00007 value7
+GET key00008 value8_updated
+GET key00009 value9
+SCAN key00005 key00009 BEGIN
+  key00005 value5_updated
+  key00006 value6
+  key00007 value7
+  key00008 value8_updated
+  key00009 value9
+SCAN END
+SCAN key00000 key00014 BEGIN
+key00000 value0_updated
+key00001 value1
+key00002 value2_updated
+key00003 value3
+key00004 value4
+key00005 value5_updated
+key00006 value6
+key00007 value7
+key00008 value8_updated
+key00009 value9
+key00010 value10_updated
+key00011 value11
+key00012 value12
+key00013 value13_updated
+key00014 value14
+SCAN END
+STOP
+[2m2025-03-17T04:00:06.677584Z[0m [33m WARN[0m [2mserver::executor[0m[2m:[0m Error receiving command: status: Unknown, message: "h2 protocol error: error reading a body from connection", details: [], metadata: MetadataMap { headers: {} }
+[2m2025-03-17T04:00:06.677593Z[0m [33m WARN[0m [2mserver::executor[0m[2m:[0m Error receiving command: status: Unknown, message: "h2 protocol error: error reading a body from connection", details: [], metadata: MetadataMap { headers: {} }
+[2m2025-03-17T04:00:06.677645Z[0m [33m WARN[0m [2mserver::executor[0m[2m:[0m Error receiving command: status: Unknown, message: "h2 protocol error: error reading a body from connection", details: [], metadata: MetadataMap { headers: {} }
+Third trace completed
+=== Cleaning up ===
