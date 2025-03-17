@@ -8,20 +8,20 @@
 
 ### 1.1 Storage Layer Design Walkthrough
 
-Our system introduces two new components: the `Log Manager` and `Storage` service. Initially, we considered a synchronous approach between the in-memory database and storage. However, after analyzing the API requirements for P3, we decided to implement a log-based approach. This design decision also allowed us to make the storage service asynchronous while maintaining data durability through logs.
+Our system introduces two new components: the `Log Manager` and `Storage` service. Initially, we considered a synchronous approach between the in-memory database and storage. However, after analyzing the requirements for P3, we decided to implement a log-based approach. This design decision also allowed us to make the storage service asynchronous while maintaining data durability.
 
 #### 1.1.1 Storage Architecture
 
-The storage layer is positioned at the bottom of our processing stack, working in conjunction with the in-memory database.
+The storage layer is positioned at the bottom of our processing stack, working with the in-memory database (by accepting storage request).
 
 #### 1.1.2 Normal Operation Flow
    - Client sends a request through the Gateway
-   - Executor processes the request and manages necessary operations
-   - For write operations (PUT, SWAP, DELETE), the request is sent to the Log Manager
-   - Log Manager synchronously persists these operations to disk
-   - After logging, the operation is forwarded to the in-memory database for immediate application
-   - In-memory database asynchronously sends write operations to the Storage service
-   - Storage collects these operations in batches for efficiency
+   - Executor processes the request and grant necessary locks
+   - For write requests (PUT, SWAP, DELETE), the request is sent to the Log Manager
+   - Log Manager synchronously persists these logs to disk
+   - After logging, the request is forwarded to the in-memory database
+   - In-memory database response back, also asynchronously sends storage messages to the Storage service
+   - Storage collects these messages in batches 
    - Batch writing to disk occurs when either:
      - A configured timeout period is reached, or
      - A specified batch size threshold is met
@@ -68,29 +68,27 @@ Our partitioning approach is straightforward:
 The client interaction with the partitioned system follows these steps:
 - Clients initially connect to the Manager to discover partition mapping
 - After learning the partition layout, clients send requests directly to the appropriate partition server based on the key
-- For operations like scans that may span multiple partitions:
+- For SCAN that may span multiple partitions:
    - The operation is carefully divided into multiple command requests
    - Each request is sent to the relevant partition server
    - Results are aggregated on the client side
 
 ### 1.3 Retry Logic Design Walkthrough
 
-Our system implements various retry mechanisms to handle connection failures and ensure reliable operation in distributed environments. 
+Our system implements various retry mechanisms to handle connection failures and ensure reliable operation. 
 
 #### 1.3.1 Client-Side Retry Logic
-We enable clients to handle connection failures through the following retry mechanisms:
-
-- **Manager Connection Retry**: If a client fails to connect to the Manager, it will automatically retry the connection using a backoff strategy
-- **Server Connection Retry**: When an RPC channel to a partition server breaks, the client will attempt to re-establish the connection
-- **Command Tracking**: Clients maintain responsibility for tracking command execution status, enabling them to retry failed commands when necessary
+We enable clients to handle connection failures:
+- **Manager Connection Retry**: If a client fails to connect to the Manager, it will automatically retry the connection every 1 second
+- **Server Connection Retry**: When an RPC channel to a partition server breaks, the client will attempt to re-establish the connection every 1 second
+- **Command Tracking**: Clients maintain responsibility for tracking command execution status, enable to retry failed commands when necessary
 
 #### 1.3.2 Server-Side Retry Logic
 
 On the server side, we implement more focused retry logic:
 
 - **Manager Registration Retry**: When a server starts up or recovers, it will retry connecting to the Manager during registration if initial attempts fail
-- **No Response Retry**: If a server fails to send results back to a client due to a broken pipe, it simply discards the result rather than attempting to retry
-
+- **No Response Retry**: If a server fails to send results back to a client due to a broken pipe, it simply discards the result
 
 ## Self-provided Testcase
 
@@ -134,17 +132,17 @@ You will run a crashing/recovering fuzz test during demo time.
 
 <u>10 clients throughput/latency across workloads & number of partitions:</u>
 
-The throughput graph demonstrates significant improvements with increased partitioning, particularly for write-heavy workloads (B - 95% writes) and read-heavy workloads (D - 95% reads, 5% scans). Workload B shows the most dramatic improvement with 5 partitions reaching nearly 40,000 ops/sec, which indicates our partitioning strategy effectively distributes write operations across servers.
+The throughput graph shows significant improvements with increased partitioning, particularly for single read/write-heavy workloads (B - 95% writes, D - 95% reads, 5% scans). Workload B shows the most dramatic improvement with 5 partitions reaching nearly 40,000 ops/sec, which indicates our partitioning strategy effectively distributes write operations across servers.
 
-Average latency consistently decreases as partition count increases across all workloads. The improvement is most pronounced in most of the workloads. With 5 partitions, we see latency reductions of up to 75% compared to a single partition, showing that distributing the request reduces contention and improves response times. 
+Average latency consistently decreases as partition count increases. The improvement is pronounced in most of the workloads. With 5 partitions, we see latency reductions of up to 75% compared to a single partition, showing that distributing the request reduces contention and improves response times. 
 
 Workload E (95% scan, 5% read), however, shows increased latency because scan operations require distributing reads to all partitions. This introduces coordination overhead and result combination overhead (since we need to reorder results when received). We also encountered problems in workload E with sparse hash keys in large key spaces. To address this, we made a design trade-off to bypass the lock manager for SCAN operations, sacrificing some consistency for better performance.
 
-Tail latencies follow similar patterns to average latency, with the 5-partition configuration providing significant improvements across all workloads. Workload E (95% scans, 5% inserts) shows the highest P99 latency, also have worse performance with higher partitions. 
+Tail latencies follow similar patterns to average latency, with the 5-partition configuration providing significant improvements across most of workloads. Workload E (95% scans, 5% inserts) shows the highest P99 latency, also have worse performance with higher partitions. 
 
 <u>Agg. throughput trend vs. number of clients w/ and w/o partitioning:</u>
 
-The second graph clearly shows our system's scalability advantages with partitioning. While the single-partition configuration plateaus at around 6,000 ops/sec regardless of client count, the 5-partition system continues scaling linearly, reaching nearly 19,000 ops/sec with 30 clients on workload A (50% reads/50% writes). This confirms that our partitioning strategy effectively eliminates bottlenecks and enables horizontal scaling as demand increases.
+This graph clearly shows our system's scalability advantages with partitioning. While the single-partition configuration plateaus at around 6,000 ops/sec regardless of client count, the 5-partition system continues scaling linearly, reaching nearly 19,000 ops/sec with 30 clients on workload A (50% reads/50% writes). This shows that our partitioning strategy effectively eliminates bottlenecks and enables horizontal scaling as demand increases.
 
 ## Additional Discussion
 
