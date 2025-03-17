@@ -94,6 +94,8 @@ On the server side, we implement more focused retry logic:
 
 You will run the described testcase during demo time.
 
+See test logs under `measurements/p2/tests/self-test.log`. The test logic followed by the instruction.
+
 ### Explanations
 
 This self-provided testcase is designed to test the system's ability to handle server failures and recoveries. From the output, we can see that the server 0 and 2 are working well during the server 1 is down. After the server 1 is recovered, the system can resume normal operation, and the server 1 can properly recover from the previous logs.
