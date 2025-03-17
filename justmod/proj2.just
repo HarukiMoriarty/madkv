@@ -22,7 +22,7 @@ clean:
 # run your KV store manager
 manager man_port="3666" servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779":
     # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables key=5
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables usertable_user=18446744073709551615
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 0.0.0.0:{{man_port}} --servers {{servers}} --tables usertable_user=12297829382473034410
 
 # run your KV store server
 server id="0" manager="127.0.0.1:3666" api_ip="127.0.0.1" api_port="3777" backer_path="./data":
@@ -31,7 +31,7 @@ server id="0" manager="127.0.0.1:3666" api_ip="127.0.0.1" api_port="3777" backer
 
 # run you KV store client in stdin/out interface mode
 benchmark manager="127.0.0.1:3666" type="ycsb":
-    cargo run --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --benchmark-type {{type}}
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --benchmark-type {{type}}
 
 # kill all processes of your KV store system
 kill:
@@ -74,6 +74,12 @@ service node="s0" manager="127.0.0.1:3666" servers="127.0.0.1:3777,127.0.0.1:377
 # ensure a subdir under 'tmp/' exists
 tmpdir subdir:
     mkdir -p "{{tmpdir_prefix}}/{{subdir}}"
+
+testcase manager="127.0.0.1:3666": (tmpdir "tests")
+    just p2::build
+    just utils::build
+    ./scripts/p2-test.sh
+    just p2::kill
 
 # run a fuzz testing scenario
 fuzz nservers="1" crashing="no" manager="127.0.0.1:3666": (tmpdir "fuzz")
