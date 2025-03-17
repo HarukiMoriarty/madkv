@@ -29,9 +29,14 @@ server id="0" manager="127.0.0.1:3666" api_ip="127.0.0.1" api_port="3777" backer
     cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --node-id {{id}} --listen-addr {{api_ip}}:{{api_port}} --manager-addr {{manager}} --db-path {{backer_path}}/{{id}}/db --log-path {{backer_path}}/{{id}}/log --persistence --batch-size 100 --batch-timeout 1000
     # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --node-id {{id}} --listen-addr {{api_ip}}:{{api_port}} --manager-addr {{manager}}
 
-# run you KV store client in stdin/out interface mode
-benchmark manager="127.0.0.1:3666" type="ycsb":
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --benchmark-type {{type}}
+# run your KV store client in stdin/out interface mode
+benchmark manager="127.0.0.1:3666" type="8":
+    #!/usr/bin/env bash
+    if [ "{{type}}" = "none" ]; then
+        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}}
+    else
+        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --key-len {{type}}
+    fi
 
 # kill all processes of your KV store system
 kill:
@@ -90,7 +95,7 @@ fuzz nservers="1" crashing="no" manager="127.0.0.1:3666": (tmpdir "fuzz")
     cargo run -p runner -r --bin fuzzer -- \
         --num-clis 5 \
         --conflict \
-        --client-just-args p2::benchmark "{{manager}}" "fuzz" \
+        --client-just-args p2::benchmark "{{manager}}" "8" \
         | tee "{{tmpdir_prefix}}/fuzz/fuzz-{{nservers}}-{{crashing}}.log"
     just p2::kill
 
@@ -102,7 +107,7 @@ bench nclis wload nservers="1" manager="127.0.0.1:3666": (tmpdir "bench")
     cargo run -p runner -r --bin bencher -- \
         --num-clis "{{nclis}}" \
         --workload "{{wload}}" \
-        --client-just-args p2::benchmark "{{manager}}" "ycsb" \
+        --client-just-args p2::benchmark "{{manager}}" "none" \
         | tee "{{tmpdir_prefix}}/bench/bench-{{nclis}}-{{wload}}-{{nservers}}.log"
     just p2::kill
 
