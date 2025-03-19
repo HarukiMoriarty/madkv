@@ -62,6 +62,8 @@ impl YcsbDriver {
             .arg(ycsb_profile(workload))
             .arg("-p")
             .arg(format!("operationcount={}", num_ops))
+            .arg("-p") // Add sequential key generation
+            .arg("insertorder=ordered")
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
             .spawn()?;
