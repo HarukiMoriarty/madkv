@@ -6,15 +6,18 @@ default:
 
 # install extra dependencies of your KV code
 deps:
-    # FIXME: your dependency installation commands here
+    git submodule add https://github.com/HarukiMoriarty/Distributed-KV-Store.git
 
 # build your executables in release mode
 build:
-    # FIXME: your build commands here (don't include clean)
+    git submodule update --recursive --remote --init
+    cd Distributed-KV-Store
+    cargo build --release
 
 # clean the build of your executables
 clean:
-    # FIXME: your clean commands here
+    cd Distributed-KV-Store
+    cargo clean --release
 
 # run your KV store manager replica
 manager rep_id="0" \
@@ -24,29 +27,30 @@ manager rep_id="0" \
         server_rf="3" \
         servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779,127.0.0.1:3780,127.0.0.1:3781,127.0.0.1:3782"\
         backer_path="./backer.m.0":
-    # FIXME: your manager run command here, listening on 0.0.0.0:p2p_port for
-    #        peer replica connections and 0.0.0.0:man_port for both server and
-    #        client registration requests
+    # we do not support manager replication
+    # fuzz test
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --server-addrs {{servers}} --server-rf {{server_rf}} --tables key=5
+    # ycsb test
+    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --server-addrs {{servers}} --server-rf {{server_rf}} --tables usertable_user=10000
 
 # run your KV store server replica
 server part_id="0" \
        rep_id="0" \
-       managers="127.0.0.1:3666,127.0.0.1:3667,127.0.0.1:3668" \
+       managers="127.0.0.1:3666" \
        api_port="3777" \
        p2p_port="3707" \
        peers="127.0.0.1:3708,127.0.0.1:3709" \
        backer_path="./backer.s0.0":
-    # FIXME: your server run command here. The server should first contact the
-    #        replicated managers to get its assignment of key range(s). It then
-    #        listens on 0.0.0.0:p2p_port for peer replica connections and
-    #        0.0.0.0:api_port for new clients, and stores all durable state under
-    #        backer_path
+    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --partition-id {{part_id}} --replica-id {{rep_id}} --client-listen-addr 127.0.0.1:{{api_port}} --manager-addr {{managers}} --db-path {{backer_path}}/db/node{{part_id}}-{{rep_id}} --log-path {{backer_path}}/log/node{{part_id}}-{{rep_id}} --persistent-state-path {{backer_path}}/state/node{{part_id}}-{{rep_id}} --persistence --batch-size 100 --batch-timeout 1000 --peer-replica-addr {{peers}} --peer-listen-addr 127.0.0.1:{{p2p_port}}
 
-# run you KV store client in stdin/out interface mode
-client managers="127.0.0.1:3666,127.0.0.1:3667,127.0.0.1:3668":
-    # FIXME: your client run command here, querying the replicated managers
-    #        for server registration information, and then connects to the
-    #        servers ready to perform operations
+# run your KV store client in stdin/out interface mode
+benchmark manager="127.0.0.1:3666" type="8":
+    #!/usr/bin/env bash
+    if [ "{{type}}" = "none" ]; then
+        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}}
+    else
+        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --key-len {{type}}
+    fi
 
 # kill all processes of your KV store system
 kill:
@@ -57,6 +61,11 @@ kill:
     #   TIP: commands such as 'pkill' may return non-zero exit code on success,
     #        which would by default abort the 'just' recipe early; prepend the
     #        command with a '-' sign to ignore its exit code
+    rm -rf data/*
+    -pkill -f "Distributed-KV-Store/target/release/server"  > /dev/null 2>&1
+    -pkill -f "Distributed-KV-Store/target/release/client"  > /dev/null 2>&1
+    -pkill -f "Distributed-KV-Store/target/release/manager"  > /dev/null 2>&1
+    -pkill -f "Distributed-KV-Store/target/release/benchmark"  > /dev/null 2>&1
 
 # NOTE: feel free to add more recipes as you see fit...
 #       also feel free to add extra parameters to the recipes as you see fit,
@@ -67,7 +76,7 @@ tmpdir_prefix := "/tmp/madkv-p3"
 
 # launch the KV service components on node (see README for conventions)
 service node="s0.0" \
-        managers="127.0.0.1:3666,127.0.0.1:3667,127.0.0.1:3668" \
+        managers="127.0.0.1:3666" \
         manager_p2ps="127.0.0.1:3606,127.0.0.1:3607,127.0.0.1:3608" \
         server_rf="3" \
         servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779,127.0.0.1:3780,127.0.0.1:3781,127.0.0.1:3782" \
@@ -106,7 +115,7 @@ fuzz server_rf="5" crashing="no" \
     cargo run -p runner -r --bin fuzzer -- \
         --num-clis 5 \
         --conflict \
-        --client-just-args p3::client "{{managers}}" \
+        --client-just-args p3::benchmark "{{managers}}" "8"\
         | tee "{{tmpdir_prefix}}/fuzz/fuzz-{{server_rf}}-{{crashing}}.log"
     just p3::kill
 
@@ -119,7 +128,7 @@ bench nclis wload server_rf="3" \
     cargo run -p runner -r --bin bencher -- \
         --num-clis "{{nclis}}" \
         --workload "{{wload}}" \
-        --client-just-args p3::client "{{managers}}" \
+        --client-just-args p3::benchmark "{{managers}}" "none" \
         | tee "{{tmpdir_prefix}}/bench/bench-{{nclis}}-{{wload}}-{{server_rf}}.log"
     # just p3::kill
 
