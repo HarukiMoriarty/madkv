@@ -29,9 +29,21 @@ manager rep_id="0" \
         backer_path="./backer.m.0":
     # we do not support manager replication
     # fuzz test
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --server-addrs {{servers}} --server-rf {{server_rf}} --tables key=5
+    cargo run --release \
+        --manifest-path=Distributed-KV-Store/Cargo.toml \
+        --bin manager \
+        -- --listen-addr 127.0.0.1:{{man_port}} \
+        --server-addrs {{servers}} \
+        --server-rf {{server_rf}} \
+        --tables key=5
     # ycsb test
-    # cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin manager -- --listen-addr 127.0.0.1:{{man_port}} --server-addrs {{servers}} --server-rf {{server_rf}} --tables usertable_user=10000
+    cargo run --release \
+        --manifest-path=Distributed-KV-Store/Cargo.toml \
+        --bin manager \
+        -- --listen-addr 127.0.0.1:{{man_port}} \
+        --server-addrs {{servers}} \
+        --server-rf {{server_rf}} \
+        --tables usertable_user=10000
 
 # run your KV store server replica
 server part_id="0" \
@@ -41,15 +53,35 @@ server part_id="0" \
        p2p_port="3707" \
        peers="127.0.0.1:3708,127.0.0.1:3709" \
        backer_path="./backer.s0.0":
-    cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin server -- --partition-id {{part_id}} --replica-id {{rep_id}} --client-listen-addr 127.0.0.1:{{api_port}} --manager-addr {{managers}} --db-path {{backer_path}}/db/node{{part_id}}-{{rep_id}} --log-path {{backer_path}}/log/node{{part_id}}-{{rep_id}} --persistent-state-path {{backer_path}}/state/node{{part_id}}-{{rep_id}} --persistence --batch-size 100 --batch-timeout 1000 --peer-replica-addr {{peers}} --peer-listen-addr 127.0.0.1:{{p2p_port}}
+    cargo run --release \
+        --manifest-path=Distributed-KV-Store/Cargo.toml \
+        --bin server \
+        -- --partition-id {{part_id}} \
+        --replica-id {{rep_id}} \
+        --client-listen-addr 127.0.0.1:{{api_port}} \
+        --manager-addr {{managers}} \
+        --db-path {{backer_path}}/db/node{{part_id}}-{{rep_id}} \
+        --log-path {{backer_path}}/log/node{{part_id}}-{{rep_id}} \
+        --persistent-state-path {{backer_path}}/state/node{{part_id}}-{{rep_id}} \
+        --persistence \
+        --batch-size 100 \
+        --batch-timeout 1000 \
+        --peer-replica-addr {{peers}} \
+        --peer-listen-addr 127.0.0.1:{{p2p_port}}
 
 # run your KV store client in stdin/out interface mode
 benchmark manager="127.0.0.1:3666" type="8":
     #!/usr/bin/env bash
     if [ "{{type}}" = "none" ]; then
-        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}}
+        cargo run --release \
+            --manifest-path=Distributed-KV-Store/Cargo.toml \
+            --bin benchmark \
+            -- --connect-addr {{manager}}
     else
-        cargo run --release --manifest-path=Distributed-KV-Store/Cargo.toml --bin benchmark -- --connect-addr {{manager}} --key-len {{type}}
+        cargo run --release \
+            --manifest-path=Distributed-KV-Store/Cargo.toml \
+            --bin benchmark \
+            -- --connect-addr {{manager}} --key-len {{type}}
     fi
 
 # kill all processes of your KV store system
