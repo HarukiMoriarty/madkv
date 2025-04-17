@@ -20,13 +20,20 @@ clean:
     cargo clean --release
 
 # run your KV store manager replica
+# manager rep_id="0" \
+#         man_port="3666" \
+#         p2p_port="3606" \
+#         peers="127.0.0.1:3607,127.0.0.1:3608" \
+#         server_rf="3" \
+#         servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779"\
+#         backer_path="./data/manager":
 manager rep_id="0" \
         man_port="3666" \
         p2p_port="3606" \
         peers="127.0.0.1:3607,127.0.0.1:3608" \
-        server_rf="3" \
-        servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779,127.0.0.1:3780,127.0.0.1:3781,127.0.0.1:3782"\
-        backer_path="./backer.m.0":
+        server_rf="5" \
+        servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779,127.0.0.1:3780,127.0.0.1:3781"\
+        backer_path="./data/manager":
     # we do not support manager replication
     # fuzz test
     cargo run --release \
@@ -52,7 +59,7 @@ server part_id="0" \
        api_port="3777" \
        p2p_port="3707" \
        peers="127.0.0.1:3708,127.0.0.1:3709" \
-       backer_path="./backer.s0.0":
+       backer_path="./data":
     cargo run --release \
         --manifest-path=Distributed-KV-Store/Cargo.toml \
         --bin server \
@@ -60,9 +67,9 @@ server part_id="0" \
         --replica-id {{rep_id}} \
         --client-listen-addr 127.0.0.1:{{api_port}} \
         --manager-addr {{managers}} \
-        --db-path {{backer_path}}/db/node{{part_id}}-{{rep_id}} \
-        --log-path {{backer_path}}/log/node{{part_id}}-{{rep_id}} \
-        --persistent-state-path {{backer_path}}/state/node{{part_id}}-{{rep_id}} \
+        --db-path {{backer_path}}/partition{{part_id}}/db/node{{part_id}}-{{rep_id}} \
+        --log-path {{backer_path}}/partition{{part_id}}/log/node{{part_id}}-{{rep_id}} \
+        --persistent-state-path {{backer_path}}/partition{{part_id}}/state/node{{part_id}}-{{rep_id}} \
         --persistence \
         --batch-size 100 \
         --batch-timeout 1000 \
@@ -73,12 +80,12 @@ server part_id="0" \
 benchmark manager="127.0.0.1:3666" type="8":
     #!/usr/bin/env bash
     if [ "{{type}}" = "none" ]; then
-        cargo run --release \
+        RUST_LOG=h2=error cargo run --release \
             --manifest-path=Distributed-KV-Store/Cargo.toml \
             --bin benchmark \
             -- --connect-addr {{manager}}
     else
-        cargo run --release \
+        RUST_LOG=h2=error cargo run --release \
             --manifest-path=Distributed-KV-Store/Cargo.toml \
             --bin benchmark \
             -- --connect-addr {{manager}} --key-len {{type}}
@@ -141,26 +148,26 @@ tmpdir subdir:
 
 # run a fuzz testing scenario
 fuzz server_rf="5" crashing="no" \
-     managers="127.0.0.1:3666,127.0.0.1:3667,127.0.0.1:3668": (tmpdir "fuzz")
+     manager="127.0.0.1:3666": (tmpdir "fuzz")
     just p3::build
     just utils::build
-    cargo run -p runner -r --bin fuzzer -- \
+    cargo run -r -p runner --bin fuzzer -- \
         --num-clis 5 \
         --conflict \
-        --client-just-args p3::benchmark "{{managers}}" "8"\
+        --client-just-args p3::benchmark "{{manager}}" "8"\
         | tee "{{tmpdir_prefix}}/fuzz/fuzz-{{server_rf}}-{{crashing}}.log"
     just p3::kill
 
 # run a YCSB benchmark workload
 bench nclis wload server_rf="3" \
-      managers="127.0.0.1:3666,127.0.0.1:3667,127.0.0.1:3668": (tmpdir "bench")
+      manager="127.0.0.1:3666": (tmpdir "bench")
     just p3::build
     just utils::build
     just utils::ycsb
     cargo run -p runner -r --bin bencher -- \
         --num-clis "{{nclis}}" \
         --workload "{{wload}}" \
-        --client-just-args p3::benchmark "{{managers}}" "none" \
+        --client-just-args p3::benchmark "{{manager}}" "none" \
         | tee "{{tmpdir_prefix}}/bench/bench-{{nclis}}-{{wload}}-{{server_rf}}.log"
     # just p3::kill
 
