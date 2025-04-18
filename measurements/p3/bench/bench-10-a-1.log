@@ -1,0 +1,22 @@
+[33m[1mYCSB benchmark configuration:[39m[22m Args {
+    num_clis: 10,
+    num_ops: 10000,
+    workload: 'a',
+    client_just_args: [
+        "p3::benchmark",
+        "127.0.0.1:3666",
+        "none",
+    ],
+}
+[33m[1mBenchmarking [Load] phase...[39m[22m
+  Launched 10 YCSB drivers, now waiting...
+[33m[1mBenchmarking [Run] phase...[39m[22m
+  Launched 10 YCSB drivers, now waiting...
+[33m[1mBenchmarking results:[39m[22m  [36mYCSB-a[39m  [35m10 clients[39m
+  [36m[Load][39m    6093 ms
+    Throughput:    1671.86 ops/sec
+    Latency:    INSERT  ops  10000  avg   5929.85  min      4  max  84479  p99  64895  us
+  [36m[Run] [39m   34528 ms
+    Throughput:    2975.36 ops/sec
+    Latency:    READ    ops  49814  avg   1512.26  min      0  max 495615  p99     82  us
+                UPDATE  ops  50186  avg   5156.93  min      0  max 478719  p99 328191  us
