@@ -89,5 +89,9 @@ Performance remains relatively stable as the replica count increases from 1 to 5
 
 ## Additional Discussion
 
-*OPTIONAL: add extra discussions if applicable*
+Our initial Raft implementation faced significant performance bottlenecks. We processed all Raft requests through `tokio::async` runtime. This resulted in leader nodes quickly reaching 100% CPU utilization and throughput degrading to 2-3 operations per second. This bottleneck stemmed from excessive recursive `tokio::spawn{async move}` calls, where Tokio's behavior caused both Raft stub and network session components to compete for the same CPU resources.
+
+To address these limitations, we redesigned our architecture to isolate the Raft network session on a separate CPU during initialization. This separation allows the network component to handle request transmission and response reception independently without interfering with other processes. The redesign enables the Raft stub to operate as a truly asynchronous method, simply placing requests into an inter-thread channel before continuing its work, eventually returning responses from the network session.
+
+This approach maintains operational safety through the first-in-first-out property of inter-thread channels. The Raft network session processes non-communicative requests in the exact sequence they were triggered by the Raft stub, ensuring that responses are appropriately matched to their corresponding requests and maintaining the consistency guarantees required by the Raft protocol.
 
