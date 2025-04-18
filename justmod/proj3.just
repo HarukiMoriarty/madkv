@@ -34,15 +34,22 @@ manager rep_id="0" \
         server_rf="5" \
         servers="127.0.0.1:3777,127.0.0.1:3778,127.0.0.1:3779,127.0.0.1:3780,127.0.0.1:3781"\
         backer_path="./data/manager":
+    # manager rep_id="0" \
+    #         man_port="3666" \
+    #         p2p_port="3606" \
+    #         peers="127.0.0.1:3607,127.0.0.1:3608" \
+    #         server_rf="1" \
+    #         servers="127.0.0.1:3777"\
+    #         backer_path="./data/manager":
     # we do not support manager replication
     # fuzz test
-    cargo run --release \
-        --manifest-path=Distributed-KV-Store/Cargo.toml \
-        --bin manager \
-        -- --listen-addr 127.0.0.1:{{man_port}} \
-        --server-addrs {{servers}} \
-        --server-rf {{server_rf}} \
-        --tables key=5
+    # cargo run --release \
+    #     --manifest-path=Distributed-KV-Store/Cargo.toml \
+    #     --bin manager \
+    #     -- --listen-addr 127.0.0.1:{{man_port}} \
+    #     --server-addrs {{servers}} \
+    #     --server-rf {{server_rf}} \
+    #     --tables key=5
     # ycsb test
     cargo run --release \
         --manifest-path=Distributed-KV-Store/Cargo.toml \
@@ -73,8 +80,7 @@ server part_id="0" \
         --persistence \
         --batch-size 100 \
         --batch-timeout 1000 \
-        --peer-replica-addr {{peers}} \
-        --peer-listen-addr 127.0.0.1:{{p2p_port}}
+        {{ if peers != "" { "--peer-replica-addr " + peers + " \\\n        --peer-listen-addr 127.0.0.1:" + p2p_port } else { "" } }}
 
 # run your KV store client in stdin/out interface mode
 benchmark manager="127.0.0.1:3666" type="8":
@@ -169,7 +175,7 @@ bench nclis wload server_rf="3" \
         --workload "{{wload}}" \
         --client-just-args p3::benchmark "{{manager}}" "none" \
         | tee "{{tmpdir_prefix}}/bench/bench-{{nclis}}-{{wload}}-{{server_rf}}.log"
-    # just p3::kill
+    just p3::kill
 
 # generate .md report template from existing results (wip)
 report:
